@@ -9,7 +9,7 @@ from email.message import EmailMessage
 
 # --- CONFIGURATION ---
 TICKET_JSON = "tickets_db.json"
-DIRECTORY_JSON = "directory_db.json" # Renamed internally for clarity
+DIRECTORY_JSON = "directory_db.json"
 ADMIN_PASSWORD = "Vijeta@17"
 SENDER_EMAIL = "vijeta@ei.study"
 SENDER_PWD = "heJWieEXqymE"  
@@ -17,7 +17,6 @@ ZOHO_SMTP = "smtp.zoho.in"
 
 # Calm Brand Styling
 COLOR_BRAND = "#0284c7"  
-COLOR_BG = "#f8fafc"     
 
 # --- DATA HELPERS ---
 def load_json(file_path):
@@ -58,7 +57,9 @@ st.markdown(f"""
         div.stButton > button:first-child:hover {{ background-color: {COLOR_BRAND}; color: white; }}
     </style>
     <div class="ei-header-banner"></div>
-    <div class="ei-footer-banner"><strong>Ei</strong> | VJ Applications & Impact Dashboards &copy; {datetime.now().year}</div>
+    <div class="ei-footer-banner">
+        <strong>Ei</strong> | VJ Applications & Impact Dashboards &copy; {datetime.now().year}
+    </div>
 """, unsafe_allow_html=True)
 
 if 'admin_auth' not in st.session_state:
@@ -96,8 +97,8 @@ if page == "Submit Request":
             url = st.text_input("Reference Data/Application URL (If any)")
         
         st.subheader("3. Technical Details")
-        requirements = st.text_area("Specific Requirements*", placeholder="e.g., Need a bar chart showing student performance, filters for grade and region...", height=100)
-        desc = st.text_area("Detailed Description / Use Case*", placeholder="Explain the context. Why is this needed? Who will use this?", height=100)
+        requirements = st.text_area("Specific Requirements*", placeholder="e.g., Need a bar chart showing student performance...", height=100)
+        desc = st.text_area("Detailed Description / Use Case*", placeholder="Explain the context. Why is this needed?", height=100)
         
         if st.form_submit_button("Submit Request", use_container_width=True):
             if name and "@" in email and requirements and desc:
@@ -137,7 +138,7 @@ elif page == "App & Dashboard Directory":
         # Build the Filter UI
         all_categories = ["All", "Application", "Dashboard for School", "Internal Dashboard", "Other"]
         selected_cat = st.radio("Filter by Category:", all_categories, horizontal=True)
-        st.write("") # Spacer
+        st.write("") 
         
         # Apply Filter
         filtered_directory = directory if selected_cat == "All" else [item for item in directory if item.get('type') == selected_cat]
@@ -175,19 +176,14 @@ else:
         tab_tickets, tab_leader, tab_port = st.tabs(["🎫 Manage Tickets", "📊 Leaderboard", "🌟 Manage Directory"])
         tickets = load_json(TICKET_JSON)
         
-        # TAB 1: TICKETS WITH TABS & FILTERS
+        # --- TAB 1: TICKETS ---
         with tab_tickets:
             if tickets:
                 df = pd.DataFrame(tickets)
                 color_map = {1: "🔴 1-Critical", 2: "🟠 2-High", 3: "🟡 3-Medium", 4: "🟢 4-Low"}
                 df['Priority Level'] = df['priority'].map(color_map)
                 
-                selected_priorities = st.multiselect(
-                    "Filter by Priority:", 
-                    options=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"],
-                    default=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"]
-                )
-                
+                selected_priorities = st.multiselect("Filter by Priority:", options=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"], default=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"])
                 df_filtered = df[df['Priority Level'].isin(selected_priorities)].sort_values("priority")
                 view_cols = ["id", "Priority Level", "status", "type", "name", "timestamp"]
                 
@@ -212,9 +208,8 @@ else:
                     current_t = next(t for t in tickets if t['id'] == tid)
                     
                     with st.expander(f"Review Details for {tid} ({current_t.get('name', 'Unknown')})"):
-                        # SAFE GET METHODS PREVENT KEYERRORS ON OLD DATA
-                        st.write(f"**Requirements:** {current_t.get('requirements', 'N/A (Legacy Ticket)')}")
-                        st.write(f"**Description:** {current_t.get('description', 'N/A (Legacy Ticket)')}")
+                        st.write(f"**Requirements:** {current_t.get('requirements', 'N/A')}")
+                        st.write(f"**Description:** {current_t.get('description', 'N/A')}")
                         if current_t.get('url'): st.write(f"**URL:** {current_t['url']}")
                     
                     col_u1, col_u2 = st.columns(2)
@@ -223,10 +218,7 @@ else:
                     with col_u2:
                         new_s = st.selectbox("Update Status", ["Open", "In Progress", "De-prioritized", "Resolved"], index=["Open", "In Progress", "De-prioritized", "Resolved"].index(current_t.get('status', 'Open')))
                     
-                    deprio_reason = ""
-                    if new_s == "De-prioritized":
-                        st.warning("⚠️ De-prioritizing this task will email the user your explanation below.")
-                        deprio_reason = st.text_area("Reason for De-prioritization*")
+                    deprio_reason = st.text_area("Reason for De-prioritization*") if new_s == "De-prioritized" else ""
                     
                     if st.button("Apply Status & Notify User"):
                         if new_s == "De-prioritized" and not deprio_reason:
@@ -234,15 +226,13 @@ else:
                         else:
                             old_s = current_t.get('status', 'Open')
                             user_email = current_t.get('email', '')
-                            user_name = current_t.get('name', 'User')
-
                             if user_email:
                                 if old_s != "In Progress" and new_s == "In Progress":
-                                    send_mail(user_email, f"Work Started: {tid}", f"Hi {user_name},\n\nI've started working on request {tid}. Expect updates soon!")
+                                    send_mail(user_email, f"Work Started: {tid}", f"Hi {current_t.get('name', 'User')},\n\nI've started working on request {tid}. Expect updates soon!")
                                 elif new_s == "De-prioritized" and old_s != "De-prioritized":
-                                    send_mail(user_email, f"Status Update: {tid}", f"Hi {user_name},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}\n\nWe will revisit this shortly.")
+                                    send_mail(user_email, f"Status Update: {tid}", f"Hi {current_t.get('name', 'User')},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}\n\nWe will revisit this shortly.")
                                 elif new_s == "Resolved" and old_s != "Resolved":
-                                    send_mail(user_email, f"Resolved: {tid}", f"Hi {user_name},\n\nYour request {tid} has been officially resolved and closed!")
+                                    send_mail(user_email, f"Resolved: {tid}", f"Hi {current_t.get('name', 'User')},\n\nYour request {tid} has been officially resolved and closed!")
                             
                             for t in tickets:
                                 if t['id'] == tid:
@@ -253,7 +243,7 @@ else:
             else:
                 st.info("Your queue is entirely empty.")
 
-        # TAB 2: LEADERBOARD
+        # --- TAB 2: LEADERBOARD ---
         with tab_leader:
             st.subheader("🏆 Top Requesters")
             if tickets:
@@ -264,25 +254,74 @@ else:
                     c1, c2 = st.columns([1, 2])
                     with c1: st.dataframe(leaderboard, hide_index=True)
                     with c2: st.bar_chart(leaderboard.set_index('Requester Name'), color=COLOR_BRAND)
-                else:
-                    st.info("No name data available yet.")
 
-        # TAB 3: DIRECTORY PUBLISHING
+        # --- TAB 3: MANAGE DIRECTORY ---
         with tab_port:
-            st.subheader("Publish New Application/Dashboard")
-            with st.form("directory_form", clear_on_submit=True):
-                p_title = st.text_input("Name*")
-                # Updated Specific Categories
-                p_type = st.selectbox("Category", ["Application", "Dashboard for School", "Internal Dashboard", "Other"])
-                p_url = st.text_input("Live URL")
-                p_desc = st.text_area("Short Description*")
-                p_usage = st.text_area("Usage Instructions")
-                
-                if st.form_submit_button("Publish to Directory"):
-                    if p_title and p_desc:
-                        directory = load_json(DIRECTORY_JSON)
-                        directory.append({"title": p_title, "type": p_type, "url": p_url, "description": p_desc, "usage": p_usage})
-                        save_json(directory, DIRECTORY_JSON)
-                        st.success("Successfully added to your public directory!")
-                    else:
-                        st.error("Name and Description are required.")
+            st.subheader("Manage App & Dashboard Directory")
+            dir_action = st.radio("Choose Action:", ["Publish New Application", "Edit / Delete Existing"], horizontal=True)
+            directory = load_json(DIRECTORY_JSON)
+            
+            # SUB-ACTION 1: ADD NEW
+            if dir_action == "Publish New Application":
+                with st.form("directory_form", clear_on_submit=True):
+                    p_title = st.text_input("Name*")
+                    p_type = st.selectbox("Category", ["Application", "Dashboard for School", "Internal Dashboard", "Other"])
+                    p_url = st.text_input("Live URL")
+                    p_desc = st.text_area("Short Description*")
+                    p_usage = st.text_area("Usage Instructions")
+                    
+                    if st.form_submit_button("Publish to Directory"):
+                        if p_title and p_desc:
+                            directory.append({"title": p_title, "type": p_type, "url": p_url, "description": p_desc, "usage": p_usage})
+                            save_json(directory, DIRECTORY_JSON)
+                            st.success("Successfully added to your public directory!")
+                        else:
+                            st.error("Name and Description are required.")
+                            
+            # SUB-ACTION 2: EDIT/DELETE EXISTING
+            elif dir_action == "Edit / Delete Existing":
+                if not directory:
+                    st.info("The directory is currently empty.")
+                else:
+                    app_names = [app.get('title', 'Untitled') for app in directory]
+                    selected_app = st.selectbox("Select Application to Edit", app_names)
+                    
+                    # Find the specific item index
+                    app_idx = next((i for i, item in enumerate(directory) if item.get('title') == selected_app), None)
+                    
+                    if app_idx is not None:
+                        curr_app = directory[app_idx]
+                        st.caption(f"Editing: **{curr_app.get('title')}**")
+                        
+                        with st.form("edit_dir_form"):
+                            e_title = st.text_input("Name*", value=curr_app.get('title', ''))
+                            
+                            categories = ["Application", "Dashboard for School", "Internal Dashboard", "Other"]
+                            curr_cat = curr_app.get('type', 'Other')
+                            cat_index = categories.index(curr_cat) if curr_cat in categories else 3
+                            
+                            e_type = st.selectbox("Category", categories, index=cat_index)
+                            e_url = st.text_input("Live URL", value=curr_app.get('url', ''))
+                            e_desc = st.text_area("Short Description*", value=curr_app.get('description', ''))
+                            e_usage = st.text_area("Usage Instructions", value=curr_app.get('usage', ''))
+                            
+                            col_e1, col_e2 = st.columns(2)
+                            with col_e1:
+                                update_btn = st.form_submit_button("💾 Update Details")
+                            with col_e2:
+                                delete_btn = st.form_submit_button("🗑️ Delete Application")
+                                
+                            if update_btn:
+                                if e_title and e_desc:
+                                    directory[app_idx] = {"title": e_title, "type": e_type, "url": e_url, "description": e_desc, "usage": e_usage}
+                                    save_json(directory, DIRECTORY_JSON)
+                                    st.success(f"Updated '{e_title}' successfully!")
+                                    st.rerun()
+                                else:
+                                    st.error("Name and Description are required.")
+                            
+                            if delete_btn:
+                                directory.pop(app_idx)
+                                save_json(directory, DIRECTORY_JSON)
+                                st.success(f"Deleted '{selected_app}' from the directory.")
+                                st.rerun()
