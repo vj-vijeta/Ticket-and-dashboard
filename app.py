@@ -11,36 +11,47 @@ from email.message import EmailMessage
 TICKET_JSON = "tickets_db.json"
 DIRECTORY_JSON = "directory_db.json"
 ADMIN_PASSWORD = "Vijeta@17"
+
+# Email Settings
 SENDER_EMAIL = "vijeta@ei.study"
 SENDER_PWD = "heJWieEXqymE"  
 ZOHO_SMTP = "smtp.zoho.in"   
+MOHAN_EMAIL = "mohan.kumar@ei.study"
 
 # Calm Brand Styling
 COLOR_BRAND = "#0284c7"  
 
-# --- DATA STORAGE ENGINE ---
+# --- BULLETPROOF DATA ENGINE ---
 def load_json(file_path):
-    # If the file exists, load it. If not, return an empty list so it can be created later.
-    if os.path.exists(file_path):
+    if not os.path.exists(file_path):
+        return []
+    try:
         with open(file_path, "r") as f: 
-            return json.load(f)
-    return []
+            content = f.read().strip()
+            if not content:
+                return []
+            return json.loads(content)
+    except Exception:
+        return []
 
 def save_json(data, file_path):
-    # Safely overwrite the JSON file with the new data dictionary
     with open(file_path, "w") as f: 
         json.dump(data, f, indent=4)
 
 def generate_short_id():
     return f"VJ-{random.randint(1000, 9999)}"
 
-# --- EMAIL ENGINE ---
-def send_mail(to_email, subject, body):
+# --- ENHANCED EMAIL ENGINE (WITH CC SUPPORT) ---
+def send_mail(to_email, subject, body, cc_emails=""):
     msg = EmailMessage()
     msg.set_content(body)
     msg['Subject'] = subject
     msg['From'] = SENDER_EMAIL
     msg['To'] = to_email
+    
+    if cc_emails:
+        msg['Cc'] = cc_emails
+
     try:
         with smtplib.SMTP_SSL(ZOHO_SMTP, 465) as server:
             server.login(SENDER_EMAIL, SENDER_PWD)
@@ -117,16 +128,13 @@ if page == "Submit Request":
                     "status": "Open", "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
                 }
                 
-                # Save to JSON Database
                 tickets = load_json(TICKET_JSON)
                 tickets.append(ticket)
                 save_json(tickets, TICKET_JSON)
                 
-                # 1. Email to the User
                 user_mail_content = f"Hi {name},\n\nYour request {t_id} ({req_type}) has been successfully logged. \n\nWe will review your requirements shortly and keep you updated."
                 send_mail(email, f"Ticket Logged: {t_id}", user_mail_content)
                 
-                # 2. Email Alert to Admin (Vijeta)
                 admin_alert_content = f"🚨 NEW TICKET RECEIVED 🚨\n\nID: {t_id}\nFrom: {name} ({email})\nPriority: {urgency}\nType: {req_type}\n\nRequirements:\n{requirements}\n\nDescription:\n{desc}"
                 send_mail(SENDER_EMAIL, f"New Ticket Alert: {t_id} - {urgency}", admin_alert_content)
                 
@@ -146,7 +154,6 @@ elif page == "App & Dashboard Directory":
     if not directory:
         st.info("No projects showcased yet. Check back soon!")
     else:
-        # Category Filter
         all_categories = ["All", "Application", "Dashboard for School", "Internal Dashboard", "Other"]
         selected_cat = st.radio("Filter by Category:", all_categories, horizontal=True)
         st.write("") 
@@ -202,18 +209,19 @@ else:
                 active_tab, closed_tab = st.tabs(["🟢 Active Queue", "🔘 Closed / Archive"])
                 
                 with active_tab:
-                    df_active = df_filtered[~df_filtered['status'].isin(['Resolved', 'Closed'])]
+                    # Treat 'Resolved' and 'Closed' as completed tickets
+                    df_active = df_filtered[~df_filtered['status'].isin(['Closed', 'Resolved'])]
                     if not df_active.empty: st.dataframe(df_active[view_cols], use_container_width=True, hide_index=True)
                     else: st.info("No active tickets match the current filter.")
                         
                 with closed_tab:
-                    df_closed = df_filtered[df_filtered['status'].isin(['Resolved', 'Closed'])]
+                    df_closed = df_filtered[df_filtered['status'].isin(['Closed', 'Resolved'])]
                     if not df_closed.empty: st.dataframe(df_closed[view_cols], use_container_width=True, hide_index=True)
                     else: st.info("No closed tickets match the current filter.")
 
                 st.divider()
                 st.subheader("Update / Triage Ticket")
-                active_tickets = [t for t in tickets if t['status'] not in ['Resolved', 'Closed']]
+                active_tickets = [t for t in tickets if t.get('status') not in ['Closed', 'Resolved']]
                 
                 if active_tickets:
                     tid = st.selectbox("Select Ticket ID to Triage", [t['id'] for t in active_tickets])
@@ -228,29 +236,65 @@ else:
                     with col_u1:
                         new_p = st.number_input("Adjust Priority (1=Critical, 4=Low)", 1, 4, value=int(current_t.get('priority', 4)))
                     with col_u2:
-                        new_s = st.selectbox("Update Status", ["Open", "In Progress", "De-prioritized", "Resolved"], index=["Open", "In Progress", "De-prioritized", "Resolved"].index(current_t.get('status', 'Open')))
+                        # SAFTEY NET: Handle legacy 'Resolved' status smoothly
+                        current_status = current_t.get('status', 'Open')
+                        if current_status == 'Resolved':
+                            current_status = 'Closed' 
+                            
+                        status_options = ["Open", "In Progress", "De-prioritized", "Closed"]
+                        safe_index = status_options.index(current_status) if current_status in status_options else 0
+                        
+                        new_s = st.selectbox("Update Status", status_options, index=safe_index)
+                    
+                    st.write("**Communication Options:**")
+                    admin_comments = st.text_area("Admin Comments (This will be included in the email to the user)", placeholder="Add an update note, timeline, or feedback here...")
+                    cc_recipients = st.text_input("CC Recipients (Comma-separated emails, e.g., mohan.kumar@ei.study)", placeholder="email1@ei.study, email2@ei.study")
                     
                     deprio_reason = st.text_area("Reason for De-prioritization*") if new_s == "De-prioritized" else ""
                     
-                    if st.button("Apply Status & Notify User"):
+                    if st.button("Update Ticket & Send Notifications", use_container_width=True):
                         if new_s == "De-prioritized" and not deprio_reason:
                             st.error("You must provide a reason to de-prioritize.")
                         else:
                             old_s = current_t.get('status', 'Open')
                             user_email = current_t.get('email', '')
+                            requester_name = current_t.get('name', 'User')
+                            
+                            comment_block = f"\n\n**Admin Notes:**\n{admin_comments}" if admin_comments else ""
+                            
+                            # 1. NOTIFY THE USER (WITH CC)
                             if user_email:
                                 if old_s != "In Progress" and new_s == "In Progress":
-                                    send_mail(user_email, f"Work Started: {tid}", f"Hi {current_t.get('name', 'User')},\n\nI've started working on request {tid}. Expect updates soon!")
+                                    body = f"Hi {requester_name},\n\nI've officially started working on request {tid}. Expect updates soon!{comment_block}"
+                                    send_mail(user_email, f"Work Started: {tid}", body, cc_emails=cc_recipients)
                                 elif new_s == "De-prioritized" and old_s != "De-prioritized":
-                                    send_mail(user_email, f"Status Update: {tid}", f"Hi {current_t.get('name', 'User')},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}\n\nWe will revisit this shortly.")
-                                elif new_s == "Resolved" and old_s != "Resolved":
-                                    send_mail(user_email, f"Resolved: {tid}", f"Hi {current_t.get('name', 'User')},\n\nYour request {tid} has been officially resolved and closed!")
-                            
+                                    body = f"Hi {requester_name},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}{comment_block}\n\nWe will revisit this shortly."
+                                    send_mail(user_email, f"Status Update: {tid}", body, cc_emails=cc_recipients)
+                                elif new_s == "Closed" and old_s not in ["Closed", "Resolved"]:
+                                    body = f"Hi {requester_name},\n\nYour request {tid} has been officially resolved and closed!{comment_block}"
+                                    send_mail(user_email, f"Resolved & Closed: {tid}", body, cc_emails=cc_recipients)
+                                elif admin_comments:
+                                    body = f"Hi {requester_name},\n\nAn update has been added to your request {tid}:{comment_block}"
+                                    send_mail(user_email, f"Ticket Update: {tid}", body, cc_emails=cc_recipients)
+
+                            # 2. NOTIFY MOHAN 
+                            if old_s != new_s:
+                                if new_s == "In Progress":
+                                    mohan_body = f"Hi Mohan,\n\nI have officially started work on Ticket {tid} (submitted by {requester_name}).\n\nPriority: P{new_p}\nType: {current_t.get('type', 'N/A')}\n{comment_block}"
+                                    send_mail(MOHAN_EMAIL, f"Work Started Alert: {tid}", mohan_body)
+                                elif new_s == "De-prioritized":
+                                    mohan_body = f"Hi Mohan,\n\nTicket {tid} has been de-prioritized.\nReason: {deprio_reason}{comment_block}"
+                                    send_mail(MOHAN_EMAIL, f"Ticket De-prioritized: {tid}", mohan_body)
+                                elif new_s == "Closed":
+                                    send_mail(MOHAN_EMAIL, f"Ticket Closed: {tid}", f"Hi Mohan,\n\nTicket {tid} has been successfully resolved and closed.{comment_block}")
+
+                            # Update DB
                             for t in tickets:
                                 if t['id'] == tid:
                                     t['status'], t['priority'] = new_s, new_p
                             save_json(tickets, TICKET_JSON)
-                            st.success(f"Ticket {tid} successfully updated!")
+                            
+                            st.success(f"Ticket {tid} successfully updated! Notifications sent.")
                             st.rerun()
             else:
                 st.info("Your queue is entirely empty.")
@@ -273,7 +317,6 @@ else:
             dir_action = st.radio("Choose Action:", ["Publish New Application", "Edit / Delete Existing"], horizontal=True)
             directory = load_json(DIRECTORY_JSON)
             
-            # Sub-Action: Publish New
             if dir_action == "Publish New Application":
                 with st.form("directory_form", clear_on_submit=True):
                     p_title = st.text_input("Name*")
@@ -290,7 +333,6 @@ else:
                         else:
                             st.error("Name and Description are required.")
                             
-            # Sub-Action: Edit / Delete
             elif dir_action == "Edit / Delete Existing":
                 if not directory:
                     st.info("The directory is currently empty.")
