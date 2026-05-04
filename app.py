@@ -7,7 +7,7 @@ import random
 from datetime import datetime
 from email.message import EmailMessage
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION & CREDENTIALS ---
 TICKET_JSON = "tickets_db.json"
 DIRECTORY_JSON = "directory_db.json"
 ADMIN_PASSWORD = "Vijeta@17"
@@ -18,14 +18,18 @@ ZOHO_SMTP = "smtp.zoho.in"
 # Calm Brand Styling
 COLOR_BRAND = "#0284c7"  
 
-# --- DATA HELPERS ---
+# --- DATA STORAGE ENGINE ---
 def load_json(file_path):
+    # If the file exists, load it. If not, return an empty list so it can be created later.
     if os.path.exists(file_path):
-        with open(file_path, "r") as f: return json.load(f)
+        with open(file_path, "r") as f: 
+            return json.load(f)
     return []
 
 def save_json(data, file_path):
-    with open(file_path, "w") as f: json.dump(data, f, indent=4)
+    # Safely overwrite the JSON file with the new data dictionary
+    with open(file_path, "w") as f: 
+        json.dump(data, f, indent=4)
 
 def generate_short_id():
     return f"VJ-{random.randint(1000, 9999)}"
@@ -65,7 +69,7 @@ st.markdown(f"""
 if 'admin_auth' not in st.session_state:
     st.session_state.admin_auth = False
 
-# --- SIDEBAR ---
+# --- SIDEBAR NAVIGATION ---
 with st.sidebar:
     st.image("https://img.icons8.com/fluency-systems-regular/96/0284c7/dashboard-layout.png", width=50)
     st.title("Workspace Nav")
@@ -76,7 +80,9 @@ with st.sidebar:
             st.session_state.admin_auth = False
             st.rerun()
 
-# --- PAGE 1: SUBMIT REQUEST ---
+# ==========================================
+# PAGE 1: SUBMIT REQUEST (USER PORTAL)
+# ==========================================
 if page == "Submit Request":
     st.header("📩 Request Support or New Dashboard")
     st.caption("Please provide detailed requirements to help us prioritize and build your solution faster.")
@@ -111,22 +117,27 @@ if page == "Submit Request":
                     "status": "Open", "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
                 }
                 
+                # Save to JSON Database
                 tickets = load_json(TICKET_JSON)
                 tickets.append(ticket)
                 save_json(tickets, TICKET_JSON)
                 
-                mail_content = f"Hi {name},\n\nYour request {t_id} ({req_type}) has been successfully logged. \n\n--- TICKET DETAILS ---\nPriority: {urgency}\nReference URL: {url if url else 'None Provided'}\n\nREQUIREMENTS:\n{requirements}\n\nDESCRIPTION:\n{desc}\n----------------------\n\nWe will review your requirements shortly and keep you updated."
+                # 1. Email to the User
+                user_mail_content = f"Hi {name},\n\nYour request {t_id} ({req_type}) has been successfully logged. \n\nWe will review your requirements shortly and keep you updated."
+                send_mail(email, f"Ticket Logged: {t_id}", user_mail_content)
                 
-                success, msg = send_mail(email, f"Ticket Logged: {t_id}", mail_content)
-                if success:
-                    st.success(f"Ticket {t_id} submitted! A detailed confirmation email was sent.")
-                    st.balloons()
-                else:
-                    st.warning(f"Ticket logged locally, but email failed to send: {msg}")
+                # 2. Email Alert to Admin (Vijeta)
+                admin_alert_content = f"🚨 NEW TICKET RECEIVED 🚨\n\nID: {t_id}\nFrom: {name} ({email})\nPriority: {urgency}\nType: {req_type}\n\nRequirements:\n{requirements}\n\nDescription:\n{desc}"
+                send_mail(SENDER_EMAIL, f"New Ticket Alert: {t_id} - {urgency}", admin_alert_content)
+                
+                st.success(f"Ticket {t_id} submitted! A confirmation email was sent.")
+                st.balloons()
             else:
                 st.error("Please fill in all mandatory fields (*).")
 
-# --- PAGE 2: APP & DASHBOARD DIRECTORY ---
+# ==========================================
+# PAGE 2: APP & DASHBOARD DIRECTORY
+# ==========================================
 elif page == "App & Dashboard Directory":
     st.header("🌟 Existing Apps & Dashboards")
     st.caption("Browse currently live tools and platforms.")
@@ -135,12 +146,11 @@ elif page == "App & Dashboard Directory":
     if not directory:
         st.info("No projects showcased yet. Check back soon!")
     else:
-        # Build the Filter UI
+        # Category Filter
         all_categories = ["All", "Application", "Dashboard for School", "Internal Dashboard", "Other"]
         selected_cat = st.radio("Filter by Category:", all_categories, horizontal=True)
         st.write("") 
         
-        # Apply Filter
         filtered_directory = directory if selected_cat == "All" else [item for item in directory if item.get('type') == selected_cat]
         
         if not filtered_directory:
@@ -161,7 +171,9 @@ elif page == "App & Dashboard Directory":
                             with st.popover("How to Use", use_container_width=True): 
                                 st.markdown(f"**Instructions:**\n\n{item.get('usage', 'No instructions provided.')}")
 
-# --- PAGE 3: ADMIN PORTAL ---
+# ==========================================
+# PAGE 3: ADMIN PORTAL (SECURED)
+# ==========================================
 else:
     if not st.session_state.admin_auth:
         st.subheader("Admin Access")
@@ -261,7 +273,7 @@ else:
             dir_action = st.radio("Choose Action:", ["Publish New Application", "Edit / Delete Existing"], horizontal=True)
             directory = load_json(DIRECTORY_JSON)
             
-            # SUB-ACTION 1: ADD NEW
+            # Sub-Action: Publish New
             if dir_action == "Publish New Application":
                 with st.form("directory_form", clear_on_submit=True):
                     p_title = st.text_input("Name*")
@@ -278,7 +290,7 @@ else:
                         else:
                             st.error("Name and Description are required.")
                             
-            # SUB-ACTION 2: EDIT/DELETE EXISTING
+            # Sub-Action: Edit / Delete
             elif dir_action == "Edit / Delete Existing":
                 if not directory:
                     st.info("The directory is currently empty.")
@@ -286,7 +298,6 @@ else:
                     app_names = [app.get('title', 'Untitled') for app in directory]
                     selected_app = st.selectbox("Select Application to Edit", app_names)
                     
-                    # Find the specific item index
                     app_idx = next((i for i, item in enumerate(directory) if item.get('title') == selected_app), None)
                     
                     if app_idx is not None:
@@ -295,7 +306,6 @@ else:
                         
                         with st.form("edit_dir_form"):
                             e_title = st.text_input("Name*", value=curr_app.get('title', ''))
-                            
                             categories = ["Application", "Dashboard for School", "Internal Dashboard", "Other"]
                             curr_cat = curr_app.get('type', 'Other')
                             cat_index = categories.index(curr_cat) if curr_cat in categories else 3
