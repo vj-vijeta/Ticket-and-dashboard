@@ -1,54 +1,97 @@
 import streamlit as st
 import pandas as pd
-import json
-import os
 import smtplib
 import random
+import requests
+import json
+import base64
 from datetime import datetime
 from email.message import EmailMessage
 
-# --- CONFIGURATION & CREDENTIALS ---
+# --- PAGE SETUP ---
+st.set_page_config(page_title="Ei | VJ Workspace", page_icon="🌊", layout="wide")
+
+# --- SECURE CREDENTIALS ---
+try:
+    ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
+    SENDER_PWD = st.secrets["SENDER_PWD"]
+    SENDER_EMAIL = st.secrets.get("SENDER_EMAIL", "vijeta@ei.study")
+    
+    # GitHub Credentials
+    GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+    GITHUB_REPO = st.secrets["GITHUB_REPO"]
+    GITHUB_BRANCH = st.secrets.get("GITHUB_BRANCH", "main")
+    
+    ZOHO_SMTP = "smtp.zoho.in"
+    MOHAN_EMAIL = "mohan.kumar@ei.study"
+except Exception:
+    st.error("⚠️ Secrets not found! Please configure your Streamlit Secrets in the Cloud Dashboard.")
+    st.stop()
+
+COLOR_BRAND = "#0284c7"
 TICKET_JSON = "tickets_db.json"
 DIRECTORY_JSON = "directory_db.json"
-ADMIN_PASSWORD = "Vijeta@17"
 
-# Email Settings
-SENDER_EMAIL = "vijeta@ei.study"
-SENDER_PWD = "heJWieEXqymE"  
-ZOHO_SMTP = "smtp.zoho.in"   
-MOHAN_EMAIL = "mohan.kumar@ei.study"
+# --- GITHUB COMMIT ENGINE ---
+def get_github_headers():
+    return {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json"
+    }
 
-# Calm Brand Styling
-COLOR_BRAND = "#0284c7"  
-
-# --- BULLETPROOF DATA ENGINE ---
-def load_json(file_path):
-    if not os.path.exists(file_path):
-        return []
+def load_data(filename):
+    """Fetches the latest JSON file directly from your GitHub repo."""
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}?ref={GITHUB_BRANCH}"
     try:
-        with open(file_path, "r") as f: 
-            content = f.read().strip()
-            if not content:
-                return []
+        response = requests.get(url, headers=get_github_headers())
+        if response.status_code == 200:
+            data = response.json()
+            # GitHub sends file content encoded in Base64
+            content = base64.b64decode(data['content']).decode('utf-8')
             return json.loads(content)
-    except Exception:
+        return []
+    except Exception as e:
+        st.sidebar.error(f"GitHub Read Error: {e}")
         return []
 
-def save_json(data, file_path):
-    with open(file_path, "w") as f: 
-        json.dump(data, f, indent=4)
+def save_data(data, filename):
+    """Encodes JSON to Base64 and pushes a commit to GitHub."""
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{filename}"
+    headers = get_github_headers()
+    
+    # 1. Fetch current file to get the 'sha' (Required by GitHub to update an existing file)
+    sha = None
+    get_response = requests.get(url + f"?ref={GITHUB_BRANCH}", headers=headers)
+    if get_response.status_code == 200:
+        sha = get_response.json().get("sha")
+        
+    # 2. Encode our new JSON back to Base64
+    content_b64 = base64.b64encode(json.dumps(data, indent=4).encode('utf-8')).decode('utf-8')
+    
+    # 3. Create the commit payload
+    payload = {
+        "message": f"Auto-update {filename} via VJ Workspace App",
+        "content": content_b64,
+        "branch": GITHUB_BRANCH
+    }
+    if sha:
+        payload["sha"] = sha
+        
+    # 4. Push the commit
+    response = requests.put(url, headers=headers, json=payload)
+    if response.status_code not in [200, 201]:
+        st.sidebar.error(f"GitHub Write Error: {response.text}")
 
 def generate_short_id():
     return f"VJ-{random.randint(1000, 9999)}"
 
-# --- ENHANCED EMAIL ENGINE (WITH CC SUPPORT) ---
+# --- ENHANCED EMAIL ENGINE ---
 def send_mail(to_email, subject, body, cc_emails=""):
     msg = EmailMessage()
     msg.set_content(body)
     msg['Subject'] = subject
     msg['From'] = SENDER_EMAIL
     msg['To'] = to_email
-    
     if cc_emails:
         msg['Cc'] = cc_emails
 
@@ -61,8 +104,6 @@ def send_mail(to_email, subject, body, cc_emails=""):
         return False, f"⚠️ Mail Error: {str(e)}"
 
 # --- UI SETUP & CSS ---
-st.set_page_config(page_title="Ei | VJ Workspace", page_icon="🌊", layout="wide")
-
 st.markdown(f"""
     <style>
         .ei-header-banner {{ position: fixed; top: 0; left: 0; width: 100%; height: 8px; background-color: {COLOR_BRAND}; z-index: 999999; }}
@@ -92,7 +133,7 @@ with st.sidebar:
             st.rerun()
 
 # ==========================================
-# PAGE 1: SUBMIT REQUEST (USER PORTAL)
+# PAGE 1: SUBMIT REQUEST
 # ==========================================
 if page == "Submit Request":
     st.header("📩 Request Support or New Dashboard")
@@ -121,6 +162,10 @@ if page == "Submit Request":
             if name and "@" in email and requirements and desc:
                 t_id = generate_short_id()
                 p_map = {"Critical": 1, "High": 2, "Medium": 3, "Low": 4}
+                
+                # Fetch live data from GitHub, append, and save
+                tickets = load_data(TICKET_JSON)
+                
                 ticket = {
                     "id": t_id, "name": name, "email": email, "type": req_type, 
                     "priority": p_map[urgency], "priority_str": urgency, "url": url, 
@@ -128,9 +173,9 @@ if page == "Submit Request":
                     "status": "Open", "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
                 }
                 
-                tickets = load_json(TICKET_JSON)
                 tickets.append(ticket)
-                save_json(tickets, TICKET_JSON)
+                with st.spinner("Saving to GitHub..."):
+                    save_data(tickets, TICKET_JSON) 
                 
                 user_mail_content = f"Hi {name},\n\nYour request {t_id} ({req_type}) has been successfully logged. \n\nWe will review your requirements shortly and keep you updated."
                 send_mail(email, f"Ticket Logged: {t_id}", user_mail_content)
@@ -138,7 +183,7 @@ if page == "Submit Request":
                 admin_alert_content = f"🚨 NEW TICKET RECEIVED 🚨\n\nID: {t_id}\nFrom: {name} ({email})\nPriority: {urgency}\nType: {req_type}\n\nRequirements:\n{requirements}\n\nDescription:\n{desc}"
                 send_mail(SENDER_EMAIL, f"New Ticket Alert: {t_id} - {urgency}", admin_alert_content)
                 
-                st.success(f"Ticket {t_id} submitted! A confirmation email was sent.")
+                st.success(f"Ticket {t_id} submitted and committed to GitHub! A confirmation email was sent.")
                 st.balloons()
             else:
                 st.error("Please fill in all mandatory fields (*).")
@@ -150,7 +195,8 @@ elif page == "App & Dashboard Directory":
     st.header("🌟 Existing Apps & Dashboards")
     st.caption("Browse currently live tools and platforms.")
     
-    directory = load_json(DIRECTORY_JSON)
+    directory = load_data(DIRECTORY_JSON)
+    
     if not directory:
         st.info("No projects showcased yet. Check back soon!")
     else:
@@ -179,7 +225,7 @@ elif page == "App & Dashboard Directory":
                                 st.markdown(f"**Instructions:**\n\n{item.get('usage', 'No instructions provided.')}")
 
 # ==========================================
-# PAGE 3: ADMIN PORTAL (SECURED)
+# PAGE 3: ADMIN PORTAL
 # ==========================================
 else:
     if not st.session_state.admin_auth:
@@ -192,14 +238,17 @@ else:
             else:
                 st.error("Access Denied. Incorrect Password.")
     else:
-        tab_tickets, tab_leader, tab_port = st.tabs(["🎫 Manage Tickets", "📊 Leaderboard", "🌟 Manage Directory"])
-        tickets = load_json(TICKET_JSON)
+        tab_tickets, tab_leader, tab_port = st.tabs(["🎫 Manage Tickets", "📊 Leaderboard & Details", "🌟 Manage Directory"])
+        
+        tickets = load_data(TICKET_JSON)
         
         # --- TAB 1: TICKETS ---
         with tab_tickets:
             if tickets:
                 df = pd.DataFrame(tickets)
-                color_map = {1: "🔴 1-Critical", 2: "🟠 2-High", 3: "🟡 3-Medium", 4: "🟢 4-Low"}
+                color_map = {1: "🔴 1-Critical", 2: "🟠 2-High", 3: "🟡 3-Medium", 4: "🟢 4-Low", "1": "🔴 1-Critical", "2": "🟠 2-High", "3": "🟡 3-Medium", "4": "🟢 4-Low"}
+                
+                df['priority'] = df['priority'].astype(str)
                 df['Priority Level'] = df['priority'].map(color_map)
                 
                 selected_priorities = st.multiselect("Filter by Priority:", options=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"], default=["🔴 1-Critical", "🟠 2-High", "🟡 3-Medium", "🟢 4-Low"])
@@ -209,7 +258,6 @@ else:
                 active_tab, closed_tab = st.tabs(["🟢 Active Queue", "🔘 Closed / Archive"])
                 
                 with active_tab:
-                    # Treat 'Resolved' and 'Closed' as completed tickets
                     df_active = df_filtered[~df_filtered['status'].isin(['Closed', 'Resolved'])]
                     if not df_active.empty: st.dataframe(df_active[view_cols], use_container_width=True, hide_index=True)
                     else: st.info("No active tickets match the current filter.")
@@ -236,20 +284,15 @@ else:
                     with col_u1:
                         new_p = st.number_input("Adjust Priority (1=Critical, 4=Low)", 1, 4, value=int(current_t.get('priority', 4)))
                     with col_u2:
-                        # SAFTEY NET: Handle legacy 'Resolved' status smoothly
                         current_status = current_t.get('status', 'Open')
-                        if current_status == 'Resolved':
-                            current_status = 'Closed' 
-                            
+                        if current_status == 'Resolved': current_status = 'Closed' 
                         status_options = ["Open", "In Progress", "De-prioritized", "Closed"]
                         safe_index = status_options.index(current_status) if current_status in status_options else 0
-                        
                         new_s = st.selectbox("Update Status", status_options, index=safe_index)
                     
                     st.write("**Communication Options:**")
-                    admin_comments = st.text_area("Admin Comments (This will be included in the email to the user)", placeholder="Add an update note, timeline, or feedback here...")
-                    cc_recipients = st.text_input("CC Recipients (Comma-separated emails, e.g., mohan.kumar@ei.study)", placeholder="email1@ei.study, email2@ei.study")
-                    
+                    admin_comments = st.text_area("Admin Comments (This will be included in the email to the user)")
+                    cc_recipients = st.text_input("CC Recipients (Comma-separated emails)")
                     deprio_reason = st.text_area("Reason for De-prioritization*") if new_s == "De-prioritized" else ""
                     
                     if st.button("Update Ticket & Send Notifications", use_container_width=True):
@@ -259,63 +302,65 @@ else:
                             old_s = current_t.get('status', 'Open')
                             user_email = current_t.get('email', '')
                             requester_name = current_t.get('name', 'User')
-                            
                             comment_block = f"\n\n**Admin Notes:**\n{admin_comments}" if admin_comments else ""
                             
-                            # 1. NOTIFY THE USER (WITH CC)
-                            if user_email:
-                                if old_s != "In Progress" and new_s == "In Progress":
-                                    body = f"Hi {requester_name},\n\nI've officially started working on request {tid}. Expect updates soon!{comment_block}"
-                                    send_mail(user_email, f"Work Started: {tid}", body, cc_emails=cc_recipients)
-                                elif new_s == "De-prioritized" and old_s != "De-prioritized":
-                                    body = f"Hi {requester_name},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}{comment_block}\n\nWe will revisit this shortly."
-                                    send_mail(user_email, f"Status Update: {tid}", body, cc_emails=cc_recipients)
-                                elif new_s == "Closed" and old_s not in ["Closed", "Resolved"]:
-                                    body = f"Hi {requester_name},\n\nYour request {tid} has been officially resolved and closed!{comment_block}"
-                                    send_mail(user_email, f"Resolved & Closed: {tid}", body, cc_emails=cc_recipients)
-                                elif admin_comments:
-                                    body = f"Hi {requester_name},\n\nAn update has been added to your request {tid}:{comment_block}"
-                                    send_mail(user_email, f"Ticket Update: {tid}", body, cc_emails=cc_recipients)
-
-                            # 2. NOTIFY MOHAN 
-                            if old_s != new_s:
-                                if new_s == "In Progress":
-                                    mohan_body = f"Hi Mohan,\n\nI have officially started work on Ticket {tid} (submitted by {requester_name}).\n\nPriority: P{new_p}\nType: {current_t.get('type', 'N/A')}\n{comment_block}"
-                                    send_mail(MOHAN_EMAIL, f"Work Started Alert: {tid}", mohan_body)
-                                elif new_s == "De-prioritized":
-                                    mohan_body = f"Hi Mohan,\n\nTicket {tid} has been de-prioritized.\nReason: {deprio_reason}{comment_block}"
-                                    send_mail(MOHAN_EMAIL, f"Ticket De-prioritized: {tid}", mohan_body)
-                                elif new_s == "Closed":
-                                    send_mail(MOHAN_EMAIL, f"Ticket Closed: {tid}", f"Hi Mohan,\n\nTicket {tid} has been successfully resolved and closed.{comment_block}")
-
-                            # Update DB
+                            # Update DB logic
                             for t in tickets:
                                 if t['id'] == tid:
                                     t['status'], t['priority'] = new_s, new_p
-                            save_json(tickets, TICKET_JSON)
+                                    
+                            with st.spinner("Committing changes to GitHub..."):
+                                save_data(tickets, TICKET_JSON)
                             
-                            st.success(f"Ticket {tid} successfully updated! Notifications sent.")
+                            # Notifications
+                            if user_email:
+                                if old_s != "In Progress" and new_s == "In Progress":
+                                    send_mail(user_email, f"Work Started: {tid}", f"Hi {requester_name},\n\nI've officially started working on request {tid}. Expect updates soon!{comment_block}", cc_recipients)
+                                elif new_s == "De-prioritized" and old_s != "De-prioritized":
+                                    send_mail(user_email, f"Status Update: {tid}", f"Hi {requester_name},\n\nRegarding request {tid}:\n\nThis task has been temporarily de-prioritized.\nReason: {deprio_reason}{comment_block}", cc_recipients)
+                                elif new_s == "Closed" and old_s not in ["Closed", "Resolved"]:
+                                    send_mail(user_email, f"Resolved & Closed: {tid}", f"Hi {requester_name},\n\nYour request {tid} has been officially resolved and closed!{comment_block}", cc_recipients)
+                                elif admin_comments:
+                                    send_mail(user_email, f"Ticket Update: {tid}", f"Hi {requester_name},\n\nAn update has been added to your request {tid}:{comment_block}", cc_recipients)
+
+                            st.success(f"Ticket {tid} successfully updated and saved to GitHub! Notifications sent.")
                             st.rerun()
             else:
                 st.info("Your queue is entirely empty.")
 
-        # --- TAB 2: LEADERBOARD ---
+        # --- TAB 2: ENHANCED LEADERBOARD & TICKET DETAILS ---
         with tab_leader:
-            st.subheader("🏆 Top Requesters")
+            st.subheader("🏆 Top Requesters & Ticket Breakdowns")
+            st.caption("Expand a requester's name to view all their submitted tickets.")
+            
             if tickets:
                 df = pd.DataFrame(tickets)
                 if 'name' in df.columns:
-                    leaderboard = df['name'].value_counts().reset_index()
-                    leaderboard.columns = ['Requester Name', 'Tickets Submitted']
-                    c1, c2 = st.columns([1, 2])
-                    with c1: st.dataframe(leaderboard, hide_index=True)
-                    with c2: st.bar_chart(leaderboard.set_index('Requester Name'), color=COLOR_BRAND)
+                    leaderboard = df.groupby('name').agg(
+                        Tickets_Submitted=('id', 'count'),
+                        Active_Tickets=('status', lambda x: sum(~x.isin(['Closed', 'Resolved'])))
+                    ).reset_index().sort_values(by='Tickets_Submitted', ascending=False)
+                    
+                    st.dataframe(leaderboard, hide_index=True, use_container_width=True)
+                    
+                    st.divider()
+                    st.markdown("### 📋 Detailed Ticket View by Requester")
+                    
+                    for _, row in leaderboard.iterrows():
+                        user_name = row['name']
+                        with st.expander(f"👤 {user_name} ({row['Tickets_Submitted']} Total Tickets)"):
+                            user_tickets = df[df['name'] == user_name][['id', 'priority_str', 'status', 'type', 'timestamp']]
+                            user_tickets.columns = ['Ticket ID', 'Priority', 'Status', 'Request Type', 'Submitted On']
+                            st.dataframe(user_tickets, hide_index=True, use_container_width=True)
+            else:
+                st.info("No tickets to analyze yet.")
 
         # --- TAB 3: MANAGE DIRECTORY ---
         with tab_port:
             st.subheader("Manage App & Dashboard Directory")
             dir_action = st.radio("Choose Action:", ["Publish New Application", "Edit / Delete Existing"], horizontal=True)
-            directory = load_json(DIRECTORY_JSON)
+            
+            directory = load_data(DIRECTORY_JSON)
             
             if dir_action == "Publish New Application":
                 with st.form("directory_form", clear_on_submit=True):
@@ -328,7 +373,8 @@ else:
                     if st.form_submit_button("Publish to Directory"):
                         if p_title and p_desc:
                             directory.append({"title": p_title, "type": p_type, "url": p_url, "description": p_desc, "usage": p_usage})
-                            save_json(directory, DIRECTORY_JSON)
+                            with st.spinner("Committing to GitHub..."):
+                                save_data(directory, DIRECTORY_JSON)
                             st.success("Successfully added to your public directory!")
                         else:
                             st.error("Name and Description are required.")
@@ -366,7 +412,8 @@ else:
                             if update_btn:
                                 if e_title and e_desc:
                                     directory[app_idx] = {"title": e_title, "type": e_type, "url": e_url, "description": e_desc, "usage": e_usage}
-                                    save_json(directory, DIRECTORY_JSON)
+                                    with st.spinner("Committing changes to GitHub..."):
+                                        save_data(directory, DIRECTORY_JSON)
                                     st.success(f"Updated '{e_title}' successfully!")
                                     st.rerun()
                                 else:
@@ -374,6 +421,7 @@ else:
                             
                             if delete_btn:
                                 directory.pop(app_idx)
-                                save_json(directory, DIRECTORY_JSON)
+                                with st.spinner("Removing from GitHub..."):
+                                    save_data(directory, DIRECTORY_JSON)
                                 st.success(f"Deleted '{selected_app}' from the directory.")
                                 st.rerun()
