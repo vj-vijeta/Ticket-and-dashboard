@@ -26,5 +26,12 @@
         "url": "https://ats-schools.ei-lab.study/admin",
         "description": "The Master Data Campaign Checker is an administrative utility tool for Educational Initiatives (Ei ASSET Talent Search India '25) used to cross-reference and audit target student records. It allows administrators to check specific ASSET Personal Identification Numbers (PANs) against master database records or synchronize live status data to manage campaign verification.",
         "usage": "To perform a campaign check and verify student records, follow these steps:\n\nProvide the Master Database:\n\nOption A: Click the [Load Server Master File] button or [Sync Live Statuses] to fetch data directly from the server or synchronize current statuses.\n\nOption B: Alternatively, upload a local master database file in .csv or .xlsx format using the file picker under section 1. Master Database (.csv, .xlsx).\n\nUpload the Campaign File:\n\nUnder section 2. Upload Campaign File (.csv, .xlsx), click [Choose file] to select and upload your target file containing the specific ASSET PANs you wish to check."
+    },
+    {
+        "title": "Webinar Calendar",
+        "type": "Application",
+        "url": "https://academy.ei-lab.study/",
+        "description": "This application is the Webinar Calendar platform for Educational Initiatives (Ei). It serves as an internal and external scheduling and event hub designed to help educators, administrators, and learners discover, track, and manage webinars and professional development sessions (such as the Ei ASSET SkillBook and various misconception-mastery workshops for math, science, and social studies).",
+        "usage": "Navigating the Calendar View:\n\nUse the Month or Week toggle buttons at the top right of the calendar header to switch between monthly and weekly layouts.\n\nUse the arrow buttons (< and >) to navigate across different months (the default view shown is October 2026).\n\nFiltering Events:\n\nUse the category filters at the top right (All, Internal, or External) to narrow down the types of sessions displayed on the calendar.\n\nUse the main navigation tabs (Calendar, Bookmarks, etc.) to switch between viewing the main schedule and your saved sessions.\n\nViewing and Saving Event Details:\n\nClick on any specific event card listed on a date (e.g., Ei ASSET SkillBook \u2013 V2 or science misconception sessions) to view its full description, presenter details, and meeting links.\n\nFrom the event details view, you can save the session to your personal list or bookmarks ."
     }
 ]
