@@ -47,5 +47,12 @@
         "url": "https://skillbook-sales.vercel.app/",
         "description": "This application is the Ei Partner Commercial Portal (developed for Educational Initiatives). It serves as a secure B2B commercial architecture and checkout portal where authorized agents can authenticate and initiate school proposals or manage commercial agreements.",
         "usage": "Agent Authentication:\n\nNavigate to the login screen on the active page.\n\nEnter your assigned administrator or agent USERNAME (e.g., admin).\n\nEnter your secure PASSWORD.\n\nInitiate Proposals:\n\nClick the [Sign In] button to access the portal dashboard, where you can proceed to generate and manage school proposals."
+    },
+    {
+        "title": "Lead Management System",
+        "type": "Application",
+        "url": "https://lead-management-system.ei-lab.study/",
+        "description": "It serves as a secure, authenticated portal for businesses and sales teams to capture, track, organize, and manage prospective clients (leads) through their sales pipeline.",
+        "usage": "Log In: Enter your authorized corporate Email and Password into the respective fields on the login screen.\n\nAccess the Portal: Click the red Log In button to authenticate and enter the dashboard.\n\nManage Leads: Once inside, you can typically view incoming leads, update their status, assign them to team members, and track conversion metrics through the system's interface."
     }
 ]
