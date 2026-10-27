@@ -40,5 +40,12 @@
         "url": "https://badge-self-mu.vercel.app/",
         "description": "This application is the Automated Badge E-mailer, a tool designed to seamlessly generate and email Verifiable Credentials (open badges) to recipients with customized achievements, criteria, and branding.",
         "usage": "Fill in Achievement Details:\n\nEnter the Achievement Name (e.g., Python Fundamentals).\n\nProvide an Achievement Description and specific Achievement Criteria (e.g., modules completed, passing scores).\n\nConfigure Optional Settings:\n\nSelect a Proficiency Level if applicable (options include Foundational, Intermediate, Advanced, or Mastery).\n\nUpload a Custom Badge Image in .png format, or leave it blank to use the default badge image.\n\nAdd Recipients:\n\nEnter your recipients in the Recipients List text box following the format Name, Email (with one recipient per line).\n\nSend:\n\nClick the [Send Badges via Email] button to generate and distribute the credentials."
+    },
+    {
+        "title": "skill book slaes Commercial Portal",
+        "type": "Dashboard for School",
+        "url": "https://skillbook-sales.vercel.app/",
+        "description": "This application is the Ei Partner Commercial Portal (developed for Educational Initiatives). It serves as a secure B2B commercial architecture and checkout portal where authorized agents can authenticate and initiate school proposals or manage commercial agreements.",
+        "usage": "Agent Authentication:\n\nNavigate to the login screen on the active page.\n\nEnter your assigned administrator or agent USERNAME (e.g., admin).\n\nEnter your secure PASSWORD.\n\nInitiate Proposals:\n\nClick the [Sign In] button to access the portal dashboard, where you can proceed to generate and manage school proposals."
     }
 ]
