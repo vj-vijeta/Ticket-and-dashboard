@@ -68,5 +68,12 @@
         "url": "https://mail-automation-ei.streamlit.app/",
         "description": "This application is an internal Mail Automation Dashboard (built on Streamlit for Educational Initiatives). It is designed to automate bulk email dispatch, campaign tracking, and customized communication workflows for institutional or program updates.",
         "usage": "Usage Instructions\nConfigure Parameters:\n\nNavigate to the sidebar or main dashboard inputs to upload your recipient list (e.g., CSV or Excel format).\n\nCustomize your email template, subject line, and body content.\n\nExecute Automation:\n\nReview the preview of your queued messages.\n\nClick the [Run Automation] or [Send Emails] button to initiate the batch dispatch process and monitor real-time delivery status logs."
+    },
+    {
+        "title": "School Dashboards Directory for Ei ASSET Talent Search",
+        "type": "Dashboard for School",
+        "url": "https://ats-schools.ei-lab.study/directory",
+        "description": "This page is the School Dashboards Directory for Ei ASSET Talent Search. It serves as an administrative directory and central index listing partner schools along with their unique school dashboard URLs and management links.",
+        "usage": "Searching for a School:\n\nType a school name or location keyword into the Search for a school... input box near the top to quickly filter the list of institutions.\n\nInteracting with School Entries:\n\nCopy Link: Click the [Copy Link] button next to any school to copy its specific dashboard URL to your clipboard.\n\nView Dashboard: Click the [View Dashboard] button next to a school to navigate directly to that institution's individual dashboard."
     }
 ]
