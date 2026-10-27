@@ -54,5 +54,12 @@
         "url": "https://lead-management-system.ei-lab.study/",
         "description": "It serves as a secure, authenticated portal for businesses and sales teams to capture, track, organize, and manage prospective clients (leads) through their sales pipeline.",
         "usage": "Log In: Enter your authorized corporate Email and Password into the respective fields on the login screen.\n\nAccess the Portal: Click the red Log In button to authenticate and enter the dashboard.\n\nManage Leads: Once inside, you can typically view incoming leads, update their status, assign them to team members, and track conversion metrics through the system's interface."
+    },
+    {
+        "title": "ajwine- ticket system",
+        "type": "Application",
+        "url": "https://lead-management-system.ei-lab.study/ajwine/",
+        "description": "This serves as an authenticated central directory and navigation portal for internal tools, applications, and interactive dashboards developed for Educational Initiatives (Ei).\nIt allows authorized users to browse, access, and manage various live platforms across different categories such as:\n\nAnalytics Dashboards: Tools like the Skill book dashboard and Ei ASSET Talent Search \u00b7 India Dashboard to track revenue, student counts, school directories, and qualification metrics.\n\nPublic & Partner Portals: Portals like the ASSET Talent Search Portal and skill book slaes Commercial Portal for managing commercial agreements and candidate qualification checks.\n\nOperational Utilities: Platforms like the Webinar Calendar, Master Data Campaign Checker, Automated Badge E-mailer, and the Lead Management System to track prospective clients and automate administrative workflows.",
+        "usage": "Navigate Categories: Use the sidebar on the left (Workspace Nav) to switch between views like the App & Dashboard Directory, Submit Request, User Portal, or Admin Portal.\n\nFilter Apps: On the main dashboard, you can filter the displayed tools by category using the filter options (All, Application, Dashboard for School, Internal Dashboard, or Other).\n\nLaunch or Learn More: Under each app card, click View Live to open the specific application or dashboard in a live view, or expand How to Use for a quick guide on how to operate that specific tool."
     }
 ]
