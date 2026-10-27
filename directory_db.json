@@ -19,5 +19,12 @@
         "url": "https://ats-schools.ei-lab.study/",
         "description": "The Ei ASSET Talent Search Portal is a public-facing platform designed for students who took part in the Ei ASSET assessments.\n\nThe main page provides a simple and direct interface that allows students to:\n\nCheck whether they have qualified for the Ei ASSET Talent Search India '25.\n\nAccess preparatory resources and study guidelines through the How to Prepare section.",
         "usage": "To check your qualification status on this page:\n\nEnter Your Identifier:\n\nLocate the input field labeled ENTER ASSET PAN (E.G. 1232436184).\n\nType in your unique ASSET Personal Identification Number (PAN).\n\nSubmit Your Query:\n\nClick the Check Status button directly below the input box to view your qualification results.\n\nExplore Preparation Materials:\n\nSwitch to the How to Prepare tab at the top of the container if you want to view guidelines and study resources for the talent search."
+    },
+    {
+        "title": "Master Data Campaign Checker",
+        "type": "Internal Dashboard",
+        "url": "https://ats-schools.ei-lab.study/admin",
+        "description": "The Master Data Campaign Checker is an administrative utility tool for Educational Initiatives (Ei ASSET Talent Search India '25) used to cross-reference and audit target student records. It allows administrators to check specific ASSET Personal Identification Numbers (PANs) against master database records or synchronize live status data to manage campaign verification.",
+        "usage": "To perform a campaign check and verify student records, follow these steps:\n\nProvide the Master Database:\n\nOption A: Click the [Load Server Master File] button or [Sync Live Statuses] to fetch data directly from the server or synchronize current statuses.\n\nOption B: Alternatively, upload a local master database file in .csv or .xlsx format using the file picker under section 1. Master Database (.csv, .xlsx).\n\nUpload the Campaign File:\n\nUnder section 2. Upload Campaign File (.csv, .xlsx), click [Choose file] to select and upload your target file containing the specific ASSET PANs you wish to check."
     }
 ]
