@@ -61,5 +61,12 @@
         "url": "https://lead-management-system.ei-lab.study/ajwine/",
         "description": "This serves as an authenticated central directory and navigation portal for internal tools, applications, and interactive dashboards developed for Educational Initiatives (Ei).\nIt allows authorized users to browse, access, and manage various live platforms across different categories such as:\n\nAnalytics Dashboards: Tools like the Skill book dashboard and Ei ASSET Talent Search \u00b7 India Dashboard to track revenue, student counts, school directories, and qualification metrics.\n\nPublic & Partner Portals: Portals like the ASSET Talent Search Portal and skill book slaes Commercial Portal for managing commercial agreements and candidate qualification checks.\n\nOperational Utilities: Platforms like the Webinar Calendar, Master Data Campaign Checker, Automated Badge E-mailer, and the Lead Management System to track prospective clients and automate administrative workflows.",
         "usage": "Navigate Categories: Use the sidebar on the left (Workspace Nav) to switch between views like the App & Dashboard Directory, Submit Request, User Portal, or Admin Portal.\n\nFilter Apps: On the main dashboard, you can filter the displayed tools by category using the filter options (All, Application, Dashboard for School, Internal Dashboard, or Other).\n\nLaunch or Learn More: Under each app card, click View Live to open the specific application or dashboard in a live view, or expand How to Use for a quick guide on how to operate that specific tool."
+    },
+    {
+        "title": "Streamlit Mail Automation App",
+        "type": "Application",
+        "url": "https://mail-automation-ei.streamlit.app/",
+        "description": "This application is an internal Mail Automation Dashboard (built on Streamlit for Educational Initiatives). It is designed to automate bulk email dispatch, campaign tracking, and customized communication workflows for institutional or program updates.",
+        "usage": "Usage Instructions\nConfigure Parameters:\n\nNavigate to the sidebar or main dashboard inputs to upload your recipient list (e.g., CSV or Excel format).\n\nCustomize your email template, subject line, and body content.\n\nExecute Automation:\n\nReview the preview of your queued messages.\n\nClick the [Run Automation] or [Send Emails] button to initiate the batch dispatch process and monitor real-time delivery status logs."
     }
 ]
