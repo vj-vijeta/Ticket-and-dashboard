@@ -1,9 +1,9 @@
 [
     {
-        "title": "Test",
-        "type": "Application",
-        "url": "",
-        "description": "Test",
-        "usage": "Test"
+        "title": "Skill book dashboard",
+        "type": "Internal Dashboard",
+        "url": "https://skill-book-dashboard.ei-lab.study/",
+        "description": "The ASSET & Skill Book Analytics application is a dashboard designed to help teams monitor adoptions, track revenue and student goals, and analyze geographic metrics in a clean, clutter-free interface.\n\nIt provides comprehensive visibility into performance metrics across key areas:\n\nRevenue & Student Count Summary: Tracks metrics such as the number of skill books, total skill book revenue, average revenue per skill book, total headroom, ASSET student counts, and ASSET revenue.\n\nConsolidated School Directory: Displays a detailed directory of participating schools, including school names, school numbers, ownership, academic consultants (ACAD), and school types (e.g., Retention, New School).",
+        "usage": "To use and navigate the dashboard effectively, you can interact with the various control and navigation panels visible on the screen:\nApply Data Controls & Filters:\nUse the sidebar on the left (Data Controls) to filter and segment the data according to your specific needs:\nHierarchy Filters: Filter by Team Handling and Ownership Leader.\nPersonnel Filters: Filter by Account Owner, Acad Consultant, and SSF Creator.\nLocation Filters: Filter by State / Union Territory and City.\n\nNavigate Core Sections:\nUse the top navigation bar to switch between different analytical views and tools:\nSchool Directory: View consolidated school listings and details.\nRole Performance: Analyze performance metrics broken down by roles.\nProduct Offerings: Inspect data related to different products.\nGeospatial Maps: Analyze adoption and metrics geographically.\nUpdates Log: Check recent logs and updates.\n\nExplore Metric Details:\n\nClick on \ud83d\udd3d View ASSET Details to dive deeper into specific ASSET metrics.\nUse the arrows and interactive tables (such as the Consolidated School Directory table) to review individual school data and classifications."
     }
 ]
