@@ -33,5 +33,12 @@
         "url": "https://academy.ei-lab.study/",
         "description": "This application is the Webinar Calendar platform for Educational Initiatives (Ei). It serves as an internal and external scheduling and event hub designed to help educators, administrators, and learners discover, track, and manage webinars and professional development sessions (such as the Ei ASSET SkillBook and various misconception-mastery workshops for math, science, and social studies).",
         "usage": "Navigating the Calendar View:\n\nUse the Month or Week toggle buttons at the top right of the calendar header to switch between monthly and weekly layouts.\n\nUse the arrow buttons (< and >) to navigate across different months (the default view shown is October 2026).\n\nFiltering Events:\n\nUse the category filters at the top right (All, Internal, or External) to narrow down the types of sessions displayed on the calendar.\n\nUse the main navigation tabs (Calendar, Bookmarks, etc.) to switch between viewing the main schedule and your saved sessions.\n\nViewing and Saving Event Details:\n\nClick on any specific event card listed on a date (e.g., Ei ASSET SkillBook \u2013 V2 or science misconception sessions) to view its full description, presenter details, and meeting links.\n\nFrom the event details view, you can save the session to your personal list or bookmarks ."
+    },
+    {
+        "title": "Automated Badge E-mailer",
+        "type": "Application",
+        "url": "https://badge-self-mu.vercel.app/",
+        "description": "This application is the Automated Badge E-mailer, a tool designed to seamlessly generate and email Verifiable Credentials (open badges) to recipients with customized achievements, criteria, and branding.",
+        "usage": "Fill in Achievement Details:\n\nEnter the Achievement Name (e.g., Python Fundamentals).\n\nProvide an Achievement Description and specific Achievement Criteria (e.g., modules completed, passing scores).\n\nConfigure Optional Settings:\n\nSelect a Proficiency Level if applicable (options include Foundational, Intermediate, Advanced, or Mastery).\n\nUpload a Custom Badge Image in .png format, or leave it blank to use the default badge image.\n\nAdd Recipients:\n\nEnter your recipients in the Recipients List text box following the format Name, Email (with one recipient per line).\n\nSend:\n\nClick the [Send Badges via Email] button to generate and distribute the credentials."
     }
 ]
