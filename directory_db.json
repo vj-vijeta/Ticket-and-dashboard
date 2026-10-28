@@ -1,9 +1,79 @@
 [
     {
-        "title": "Test",
+        "title": "Skill book dashboard",
+        "type": "Internal Dashboard",
+        "url": "https://skill-book-dashboard.ei-lab.study/",
+        "description": "The ASSET & Skill Book Analytics application is a dashboard designed to help teams monitor adoptions, track revenue and student goals, and analyze geographic metrics in a clean, clutter-free interface.\n\nIt provides comprehensive visibility into performance metrics across key areas:\n\nRevenue & Student Count Summary: Tracks metrics such as the number of skill books, total skill book revenue, average revenue per skill book, total headroom, ASSET student counts, and ASSET revenue.\n\nConsolidated School Directory: Displays a detailed directory of participating schools, including school names, school numbers, ownership, academic consultants (ACAD), and school types (e.g., Retention, New School).",
+        "usage": "To use and navigate the dashboard effectively, you can interact with the various control and navigation panels visible on the screen:\nApply Data Controls & Filters:\nUse the sidebar on the left (Data Controls) to filter and segment the data according to your specific needs:\nHierarchy Filters: Filter by Team Handling and Ownership Leader.\nPersonnel Filters: Filter by Account Owner, Acad Consultant, and SSF Creator.\nLocation Filters: Filter by State / Union Territory and City.\n\nNavigate Core Sections:\nUse the top navigation bar to switch between different analytical views and tools:\nSchool Directory: View consolidated school listings and details.\nRole Performance: Analyze performance metrics broken down by roles.\nProduct Offerings: Inspect data related to different products.\nGeospatial Maps: Analyze adoption and metrics geographically.\nUpdates Log: Check recent logs and updates.\n\nExplore Metric Details:\n\nClick on \ud83d\udd3d View ASSET Details to dive deeper into specific ASSET metrics.\nUse the arrows and interactive tables (such as the Consolidated School Directory table) to review individual school data and classifications."
+    },
+    {
+        "title": "Ei ASSET Talent Search \u00b7 India Dashboard",
+        "type": "Internal Dashboard",
+        "url": "https://ats-in.ei-lab.study/",
+        "description": "The Ei ASSET Talent Search \u00b7 India Dashboard is an internal, confidential analytical portal designed for Educational Initiatives to track and monitor student participation, qualifiers, and registration metrics for the ASSET Talent Search program.\n\nIt provides an overview of performance across regions, featuring summary metrics such as:\n\nSchools: Total number of participating schools with 2026 data (currently 337 schools).\n\n2026 Qualifiers: Total number of students who qualified (31,421 students).\n\n2026 Registered: Live registration totals (762 total, broken down across schools, non-ASSET schools, and earlier qualifiers).\n\n2026 Conversion: The registration-to-qualifier conversion rate (2.4%).\n\nConsolidated School Table: A detailed breakdown listing individual schools, their school codes, cities, states, 2026 qualifiers, 2026 registered counts, and conversion percentages.",
+        "usage": "To navigate and utilize the dashboard effectively:\n\nFilter Data:\n\nClick on the Filters section (filter_list) at the top to segment the data by parameters such as State, City, HO ATS Partner, and various Manager Levels.\n\nUse the Clear all filters button (restart_alt) to reset your view.\n\nSearch for Specific Schools:\n\nUse the search bar (\"Search by school name, code, city or manager...\") to quickly locate a specific institution or team member.\n\nRefresh Data:\n\nClick the Refresh button at the top right to sync and update the data with the latest records.\n\nExport Data:\n\nClick the Download button to export the school data table for offline reporting or analysis."
+    },
+    {
+        "title": "ASSET Talent Search Portal",
+        "type": "Dashboard for School",
+        "url": "https://ats-schools.ei-lab.study/",
+        "description": "The Ei ASSET Talent Search Portal is a public-facing platform designed for students who took part in the Ei ASSET assessments.\n\nThe main page provides a simple and direct interface that allows students to:\n\nCheck whether they have qualified for the Ei ASSET Talent Search India '25.\n\nAccess preparatory resources and study guidelines through the How to Prepare section.",
+        "usage": "To check your qualification status on this page:\n\nEnter Your Identifier:\n\nLocate the input field labeled ENTER ASSET PAN (E.G. 1232436184).\n\nType in your unique ASSET Personal Identification Number (PAN).\n\nSubmit Your Query:\n\nClick the Check Status button directly below the input box to view your qualification results.\n\nExplore Preparation Materials:\n\nSwitch to the How to Prepare tab at the top of the container if you want to view guidelines and study resources for the talent search."
+    },
+    {
+        "title": "Master Data Campaign Checker",
+        "type": "Internal Dashboard",
+        "url": "https://ats-schools.ei-lab.study/admin",
+        "description": "The Master Data Campaign Checker is an administrative utility tool for Educational Initiatives (Ei ASSET Talent Search India '25) used to cross-reference and audit target student records. It allows administrators to check specific ASSET Personal Identification Numbers (PANs) against master database records or synchronize live status data to manage campaign verification.",
+        "usage": "To perform a campaign check and verify student records, follow these steps:\n\nProvide the Master Database:\n\nOption A: Click the [Load Server Master File] button or [Sync Live Statuses] to fetch data directly from the server or synchronize current statuses.\n\nOption B: Alternatively, upload a local master database file in .csv or .xlsx format using the file picker under section 1. Master Database (.csv, .xlsx).\n\nUpload the Campaign File:\n\nUnder section 2. Upload Campaign File (.csv, .xlsx), click [Choose file] to select and upload your target file containing the specific ASSET PANs you wish to check."
+    },
+    {
+        "title": "Webinar Calendar",
         "type": "Application",
-        "url": "",
-        "description": "Test",
-        "usage": "Test"
+        "url": "https://academy.ei-lab.study/",
+        "description": "This application is the Webinar Calendar platform for Educational Initiatives (Ei). It serves as an internal and external scheduling and event hub designed to help educators, administrators, and learners discover, track, and manage webinars and professional development sessions (such as the Ei ASSET SkillBook and various misconception-mastery workshops for math, science, and social studies).",
+        "usage": "Navigating the Calendar View:\n\nUse the Month or Week toggle buttons at the top right of the calendar header to switch between monthly and weekly layouts.\n\nUse the arrow buttons (< and >) to navigate across different months (the default view shown is October 2026).\n\nFiltering Events:\n\nUse the category filters at the top right (All, Internal, or External) to narrow down the types of sessions displayed on the calendar.\n\nUse the main navigation tabs (Calendar, Bookmarks, etc.) to switch between viewing the main schedule and your saved sessions.\n\nViewing and Saving Event Details:\n\nClick on any specific event card listed on a date (e.g., Ei ASSET SkillBook \u2013 V2 or science misconception sessions) to view its full description, presenter details, and meeting links.\n\nFrom the event details view, you can save the session to your personal list or bookmarks."
+    },
+    {
+        "title": "Automated Badge E-mailer",
+        "type": "Application",
+        "url": "https://badge-self-mu.vercel.app/",
+        "description": "This application is the Automated Badge E-mailer, a tool designed to seamlessly generate and email Verifiable Credentials (open badges) to recipients with customized achievements, criteria, and branding.",
+        "usage": "Fill in Achievement Details:\n\nEnter the Achievement Name (e.g., Python Fundamentals).\n\nProvide an Achievement Description and specific Achievement Criteria (e.g., modules completed, passing scores).\n\nConfigure Optional Settings:\n\nSelect a Proficiency Level if applicable (options include Foundational, Intermediate, Advanced, or Mastery).\n\nUpload a Custom Badge Image in .png format, or leave it blank to use the default badge image.\n\nAdd Recipients:\n\nEnter your recipients in the Recipients List text box following the format Name, Email (with one recipient per line).\n\nSend:\n\nClick the [Send Badges via Email] button to generate and distribute the credentials."
+    },
+    {
+        "title": "skill book slaes Commercial Portal",
+        "type": "Dashboard for School",
+        "url": "https://skillbook-sales.vercel.app/",
+        "description": "This application is the Ei Partner Commercial Portal (developed for Educational Initiatives). It serves as a secure B2B commercial architecture and checkout portal where authorized agents can authenticate and initiate school proposals or manage commercial agreements.",
+        "usage": "Agent Authentication:\n\nNavigate to the login screen on the active page.\n\nEnter your assigned administrator or agent USERNAME (e.g., admin).\n\nEnter your secure PASSWORD.\n\nInitiate Proposals:\n\nClick the [Sign In] button to access the portal dashboard, where you can proceed to generate and manage school proposals."
+    },
+    {
+        "title": "Lead Management System",
+        "type": "Application",
+        "url": "https://lead-management-system.ei-lab.study/",
+        "description": "It serves as a secure, authenticated portal for businesses and sales teams to capture, track, organize, and manage prospective clients (leads) through their sales pipeline.",
+        "usage": "Log In: Enter your authorized corporate Email and Password into the respective fields on the login screen.\n\nAccess the Portal: Click the red Log In button to authenticate and enter the dashboard.\n\nManage Leads: Once inside, you can typically view incoming leads, update their status, assign them to team members, and track conversion metrics through the system's interface."
+    },
+    {
+        "title": "ajwine- ticket system",
+        "type": "Application",
+        "url": "https://lead-management-system.ei-lab.study/ajwine/",
+        "description": "This serves as an authenticated central directory and navigation portal for internal tools, applications, and interactive dashboards developed for Educational Initiatives (Ei).\nIt allows authorized users to browse, access, and manage various live platforms across different categories such as:\n\nAnalytics Dashboards: Tools like the Skill book dashboard and Ei ASSET Talent Search \u00b7 India Dashboard to track revenue, student counts, school directories, and qualification metrics.\n\nPublic & Partner Portals: Portals like the ASSET Talent Search Portal and skill book slaes Commercial Portal for managing commercial agreements and candidate qualification checks.\n\nOperational Utilities: Platforms like the Webinar Calendar, Master Data Campaign Checker, Automated Badge E-mailer, and the Lead Management System to track prospective clients and automate administrative workflows.",
+        "usage": "Navigate Categories: Use the sidebar on the left (Workspace Nav) to switch between views like the App & Dashboard Directory, Submit Request, User Portal, or Admin Portal.\n\nFilter Apps: On the main dashboard, you can filter the displayed tools by category using the filter options (All, Application, Dashboard for School, Internal Dashboard, or Other).\n\nLaunch or Learn More: Under each app card, click View Live to open the specific application or dashboard in a live view, or expand How to Use for a quick guide on how to operate that specific tool."
+    },
+    {
+        "title": "Streamlit Mail Automation App",
+        "type": "Application",
+        "url": "https://mail-automation-ei.streamlit.app/",
+        "description": "This application is an internal Mail Automation Dashboard (built on Streamlit for Educational Initiatives). It is designed to automate bulk email dispatch, campaign tracking, and customized communication workflows for institutional or program updates.",
+        "usage": "Usage Instructions\nConfigure Parameters:\n\nNavigate to the sidebar or main dashboard inputs to upload your recipient list (e.g., CSV or Excel format).\n\nCustomize your email template, subject line, and body content.\n\nExecute Automation:\n\nReview the preview of your queued messages.\n\nClick the [Run Automation] or [Send Emails] button to initiate the batch dispatch process and monitor real-time delivery status logs."
+    },
+    {
+        "title": "School Dashboards Directory for Ei ASSET Talent Search",
+        "type": "Dashboard for School",
+        "url": "https://ats-schools.ei-lab.study/directory",
+        "description": "This page is the School Dashboards Directory for Ei ASSET Talent Search. It serves as an administrative directory and central index listing partner schools along with their unique school dashboard URLs and management links.",
+        "usage": "Searching for a School:\n\nType a school name or location keyword into the Search for a school... input box near the top to quickly filter the list of institutions.\n\nInteracting with School Entries:\n\nCopy Link: Click the [Copy Link] button next to any school to copy its specific dashboard URL to your clipboard.\n\nView Dashboard: Click the [View Dashboard] button next to a school to navigate directly to that institution's individual dashboard."
     }
 ]
