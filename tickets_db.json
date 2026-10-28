@@ -33,5 +33,27 @@
         ],
         "status": "Closed",
         "timestamp": "2026-10-28 08:34"
+    },
+    {
+        "id": "VJ-8063",
+        "name": "Venika Kamal",
+        "email": "venika.kamal@ei.study",
+        "type": "Social Media & Marketing Campaign",
+        "priority": 3,
+        "priority_str": "Medium",
+        "url": "test.com",
+        "requirements": "Create ",
+        "description": "Create a poster",
+        "assigned_to": "Vijeta",
+        "assigned_history": [
+            {
+                "assigned_to": "Vijeta",
+                "assigned_by": "Venika Kamal",
+                "timestamp": "2026-10-28 13:08",
+                "note": "Initial request submission"
+            }
+        ],
+        "status": "Open",
+        "timestamp": "2026-10-28 13:08"
     }
 ]
