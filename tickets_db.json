@@ -55,5 +55,27 @@
         ],
         "status": "Open",
         "timestamp": "2026-10-28 13:08"
+    },
+    {
+        "id": "VJ-8048",
+        "name": "pradeep Sharma",
+        "email": "pradeep.sharma@ei.study",
+        "type": "Poster & Creative Graphic Design",
+        "priority": 2,
+        "priority_str": "High",
+        "url": "google.com",
+        "requirements": "I want a poster",
+        "description": "test",
+        "assigned_to": "Vijeta",
+        "assigned_history": [
+            {
+                "assigned_to": "Vijeta",
+                "assigned_by": "pradeep Sharma",
+                "timestamp": "2026-10-28 13:58",
+                "note": "Initial request submission"
+            }
+        ],
+        "status": "Open",
+        "timestamp": "2026-10-28 13:58"
     }
 ]
