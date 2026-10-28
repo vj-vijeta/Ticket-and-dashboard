@@ -1446,3 +1446,4 @@ else:
                                     save_data(directory, DIRECTORY_JSON)
                                 st.success(f"Deleted '{selected_app}' from the directory.")
                                 st.rerun()
+#update 
