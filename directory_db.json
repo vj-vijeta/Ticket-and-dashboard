@@ -14,7 +14,7 @@
         "usage": "To navigate and utilize the dashboard effectively:\n\nFilter Data:\n\nClick on the Filters section (filter_list) at the top to segment the data by parameters such as State, City, HO ATS Partner, and various Manager Levels.\n\nUse the Clear all filters button (restart_alt) to reset your view.\n\nSearch for Specific Schools:\n\nUse the search bar (\"Search by school name, code, city or manager...\") to quickly locate a specific institution or team member.\n\nRefresh Data:\n\nClick the Refresh button at the top right to sync and update the data with the latest records.\n\nExport Data:\n\nClick the Download button to export the school data table for offline reporting or analysis."
     },
     {
-        "title": "ASSET Talent Search Portal",
+        "title": "ASSET Talent Search Portal ",
         "type": "Dashboard for School",
         "url": "https://ats-schools.ei-lab.study/",
         "description": "The Ei ASSET Talent Search Portal is a public-facing platform designed for students who took part in the Ei ASSET assessments.\n\nThe main page provides a simple and direct interface that allows students to:\n\nCheck whether they have qualified for the Ei ASSET Talent Search India '25.\n\nAccess preparatory resources and study guidelines through the How to Prepare section.",
@@ -32,7 +32,7 @@
         "type": "Application",
         "url": "https://academy.ei-lab.study/",
         "description": "This application is the Webinar Calendar platform for Educational Initiatives (Ei). It serves as an internal and external scheduling and event hub designed to help educators, administrators, and learners discover, track, and manage webinars and professional development sessions (such as the Ei ASSET SkillBook and various misconception-mastery workshops for math, science, and social studies).",
-        "usage": "Navigating the Calendar View:\n\nUse the Month or Week toggle buttons at the top right of the calendar header to switch between monthly and weekly layouts.\n\nUse the arrow buttons (< and >) to navigate across different months (the default view shown is October 2026).\n\nFiltering Events:\n\nUse the category filters at the top right (All, Internal, or External) to narrow down the types of sessions displayed on the calendar.\n\nUse the main navigation tabs (Calendar, Bookmarks, etc.) to switch between viewing the main schedule and your saved sessions.\n\nViewing and Saving Event Details:\n\nClick on any specific event card listed on a date (e.g., Ei ASSET SkillBook \u2013 V2 or science misconception sessions) to view its full description, presenter details, and meeting links.\n\nFrom the event details view, you can save the session to your personal list or bookmarks."
+        "usage": "Navigating the Calendar View:\n\nUse the Month or Week toggle buttons at the top right of the calendar header to switch between monthly and weekly layouts.\n\nUse the arrow buttons (< and >) to navigate across different months (the default view shown is October 2026).\n\nFiltering Events:\n\nUse the category filters at the top right (All, Internal, or External) to narrow down the types of sessions displayed on the calendar.\n\nUse the main navigation tabs (Calendar, Bookmarks, etc.) to switch between viewing the main schedule and your saved sessions.\n\nViewing and Saving Event Details:\n\nClick on any specific event card listed on a date (e.g., Ei ASSET SkillBook \u2013 V2 or science misconception sessions) to view its full description, presenter details, and meeting links.\n\nFrom the event details view, you can save the session to your personal list or bookmarks ."
     },
     {
         "title": "Automated Badge E-mailer",
@@ -75,5 +75,12 @@
         "url": "https://ats-schools.ei-lab.study/directory",
         "description": "This page is the School Dashboards Directory for Ei ASSET Talent Search. It serves as an administrative directory and central index listing partner schools along with their unique school dashboard URLs and management links.",
         "usage": "Searching for a School:\n\nType a school name or location keyword into the Search for a school... input box near the top to quickly filter the list of institutions.\n\nInteracting with School Entries:\n\nCopy Link: Click the [Copy Link] button next to any school to copy its specific dashboard URL to your clipboard.\n\nView Dashboard: Click the [View Dashboard] button next to a school to navigate directly to that institution's individual dashboard."
+    },
+    {
+        "title": "Customer education platform",
+        "type": "Application",
+        "url": "https://academy.ei-lab.study/cep/",
+        "description": "This application is the Ei Platform (Platform 2.0) by Educational Initiatives. It serves as an online learning and professional development hub designed for educators and parents. The platform offers curated learning trails, expert-led teaching strategies, neurodivergent support workshops, and interactive classroom resources.",
+        "usage": "Navigating the Platform:\n\nUse the top navigation bar to explore different sections: Home, Webinars, Courses, News and Updates, My Learning, and the Forum.\n\nUse the search bar at the top of the page to quickly search for webinars, courses, or specific topics.\n\nGetting Started & Account Creation:\n\nClick the Log in or Sign In Now buttons if you already have an account.\n\nClick Sign up or Create Free Account to register a new account and begin exploring free educational content and learning trails."
     }
 ]
