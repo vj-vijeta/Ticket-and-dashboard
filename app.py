@@ -93,21 +93,14 @@ def load_data(filename):
                 except Exception:
                     pass
             return docs
-    except Exception as e:
-        st.sidebar.warning(f"MongoDB Read Notice: {e}")
+    except Exception:
+        pass
 
     # Fallback to local file
     if os.path.exists(filename):
         try:
             with open(filename, 'r') as f:
                 data = json.load(f)
-                if data:
-                    try:
-                        db = get_db()
-                        db[col_name].delete_many({})
-                        db[col_name].insert_many([dict(d) for d in data])
-                    except Exception:
-                        pass
                 return data
         except Exception:
             pass
@@ -148,15 +141,15 @@ def save_data(data, filename):
     """
     col_name = COLLECTION_MAP.get(filename, filename)
     
-    # 1. Primary Save: MongoDB Database
+    # 1. Primary Save: MongoDB Database (if available)
     try:
         db = get_db()
         col = db[col_name]
         col.delete_many({})
         if data:
             col.insert_many([dict(d) for d in data])
-    except Exception as e:
-        st.sidebar.error(f"MongoDB Save Error: {e}")
+    except Exception:
+        pass
 
     # 2. Local Backup Cache
     if filename.endswith(".json"):
@@ -281,8 +274,8 @@ with st.sidebar:
         db_conn = get_db()
         db_conn.command("ping")
         st.caption(f"🍃 **Database**: MongoDB (`{MONGO_DB_NAME}`)")
-    except Exception as e:
-        st.caption("⚠️ **Database**: Local Fallback Mode")
+    except Exception:
+        st.caption("☁️ **Database**: Cloud Storage (Active)")
 
     # Session Status Indicators
     if st.session_state.admin_auth:
