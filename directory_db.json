@@ -82,5 +82,12 @@
         "url": "https://academy.ei-lab.study/cep/",
         "description": "This application is the Ei Platform (Platform 2.0) by Educational Initiatives. It serves as an online learning and professional development hub designed for educators and parents. The platform offers curated learning trails, expert-led teaching strategies, neurodivergent support workshops, and interactive classroom resources.",
         "usage": "Navigating the Platform:\n\nUse the top navigation bar to explore different sections: Home, Webinars, Courses, News and Updates, My Learning, and the Forum.\n\nUse the search bar at the top of the page to quickly search for webinars, courses, or specific topics.\n\nGetting Started & Account Creation:\n\nClick the Log in or Sign In Now buttons if you already have an account.\n\nClick Sign up or Create Free Account to register a new account and begin exploring free educational content and learning trails."
+    },
+    {
+        "title": "ATS-KLE Society Schools Dashboard",
+        "type": "Dashboard for School",
+        "url": "https://ats-schools.ei-lab.study/kle-schools",
+        "description": "This page is the Ei ASSET Talent Search (Ei ATS) Dashboard for KLE Society Schools. It displays performance and qualification data for students across various KLE Society school branches who have qualified for the prestigious Ei ATS program.\n\nKey metrics shown at the top of the dashboard include:\n\nTotal Branches: 18 KLE school branches participating.\n\nTotal Qualifiers: 2,838 students who have qualified.",
+        "usage": "You can use the interactive controls on the dashboard to filter and sort the student results:\n\nFilter by Branch:\n\nClick on the Filter Branch dropdown menu (currently set to \"All KLE Schools\") to narrow down the list to a specific branch (such as KLE M. R. Sakhare CBSE School, Hubballi, KLE School, Dharwad, KLE International School, Belagavi, etc.).\n\nSort the Results:\n\nUse the Sort by dropdown menu to organize the student list according to your preference. The available options are:\n\nDefault (Most Qualifiers)\n\nBest Percentile (High to Low)\n\nSchool Name (A to Z)\n\nView Student Details:\n\nBrowse through the data table, which lists the Serial Number, Student Name, School Name, Class/Section, and their Best Percentile along with the respective subject (English, Maths, or Science) in which they qualified."
     }
 ]
